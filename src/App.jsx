@@ -1,8 +1,8 @@
-import React from 'react'
-import Navbar from './components/Navbar'
-import { Route, Routes } from 'react-router-dom'
-import FormList from './components/FormList'
-import Form from './components/Form'
+import React from 'react';
+import Navbar from './components/Navbar';
+import { Route, Routes } from 'react-router-dom';
+import FormList from './components/FormList';
+import Form from './components/Form';
 
 const App = () => {
   return (
@@ -16,7 +16,7 @@ const App = () => {
         </Routes>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

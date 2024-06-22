@@ -1,39 +1,47 @@
-import  { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useForm from '../hooks/useForm';
-import { addEmploye, getEmployeeById ,editEmployee } from '../service/localStorage';
+import { useDispatch } from 'react-redux';
+import { getEmployeeById ,addEmployee, editEmployee } from '../service/localStorage';
 
 const Form = () => {
   const navigate = useNavigate();
-  const {id} = useParams(useForm)
   const [showAlert,setShowAlert] = useState(false)
-  const { inputvalues, handleInputChange, resetForm , setForm } = useForm({
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { inputvalues, handleInputChange, resetForm, setForm } = useForm({
     name: "",
     email: "",
-    address: "",
+    gender: "",
     phone: "",
   });
 
   useEffect(() => {
-    if(id) {
+    if (id) {
       const employee = getEmployeeById(id);
-      setForm(employee)
+      setForm(employee);
     }
-  },[id])
+  }, [id, setForm]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   id ? editEmployee(id,inputvalues) : addEmploye(inputvalues);
+    if (id) {
+      dispatch(editEmployee({ id, updateEmployee: inputvalues }));
+    } else {
+      dispatch(addEmployee(inputvalues));
+    }
     resetForm();
+    setShowAlert(true);
     setTimeout(() => {
-      setShowAlert(true)
-    },2000)
+      setShowAlert(false);
+      navigate('/');
+    }, 2000);
   };
 
   return (
     <div>
       <div className="d-flex my-5 justify-content-between">
-        <button className='btn btn-outline-secondary' onClick={() => navigate("/")} >Back</button>
+        <button className='btn btn-outline-secondary' onClick={() => navigate("/")}>Back</button>
         <h1>{id ? "Edit" : "Create"} Employee</h1>
       </div>
 
@@ -66,16 +74,19 @@ const Form = () => {
           </div>
 
           <div className="form-group">
-            <label className='form-label mt-2' htmlFor="address">Address</label>
-            <input
-              id='address'
-              type="text"
-              name='address'
-              value={inputvalues.address}
+            <label className='form-label mt-2' htmlFor="gender">Gender</label>
+            <select
+              id='gender'
+              name='gender'
+              value={inputvalues.gender}
               onChange={handleInputChange}
-              className='form-control'
-              placeholder='Address'
-            />
+              className='form-select'
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
 
           <div className="form-group">
@@ -92,20 +103,18 @@ const Form = () => {
           </div>
 
           <div className="d-grid gap-2 mt-3">
-            <button type='submit' className='btn btn-outline-primary'>Send</button>
+            <button type='submit' className='btn btn-outline-primary'>{id ? 'Update' : 'Add'} Employee</button>
           </div>
         </form>
       </div>
 
-      {
-        showAlert && (
-          <div className="px-5">
-            <div className="alert alert-success text-white" role='alert'>
-              Well done! added a new emplyee
-            </div>
+      {showAlert && (
+        <div className="px-5">
+          <div className="alert alert-success text-white" role='alert'>
+            Well done! {id ? "Updated" : "Added"} a new employee
           </div>
-        )
-      }
+        </div>
+      )}
     </div>
   );
 };

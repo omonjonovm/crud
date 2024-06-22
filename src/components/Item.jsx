@@ -1,26 +1,23 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { deleteEmployee, getList } from '../service/localStorage';
 
-const Item = ({ employee ,setEmployes }) => {
-  const { id, name, email, address, phone } = employee;
-  const navigate = useNavigate()
-  const removeEmployee = () => {
-    deleteEmployee(id);
-    setEmployes(getList())
-  }
+const Item = ({ employee, onDelete }) => {
+  const { id, name, email, gender, phone } = employee;
+  const navigate = useNavigate();
+
   return (
     <tr>
       <td>{name}</td>
       <td>{email}</td>
-      <td>{address}</td>
+      <td>{gender}</td>
       <td>{phone}</td>
       <td>
         <div className="d-flex gap-3">
-          <span role='button' className='badge bg-success' onClick={() => navigate(`/edit/${id}`)} >
+          <span role="button" className="badge bg-success" onClick={() => navigate(`/edit/${id}`)}>
             Edit
           </span>
-          <span role='button' className='badge bg-danger'onClick={() => removeEmployee()} >
+          <span role="button" className="badge bg-danger" onClick={() => onDelete(id)}>
             Delete
           </span>
         </div>
