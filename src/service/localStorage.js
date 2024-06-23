@@ -1,34 +1,31 @@
-import { v4 as uuidv4 } from 'uuid';
+// service/localStorage.js
 
 export const getList = () => {
-  if (!localStorage["@employees"]) {
-    localStorage["@employees"] = JSON.stringify([]);
-  }
-  return JSON.parse(localStorage["@employees"]);
+  return JSON.parse(localStorage.getItem('employees')) || [];
 };
 
 export const getEmployeeById = (id) => {
   const employees = getList();
-  return employees.find(employee => employee.id === id);
+  return employees.find(emp => emp.id === id);
 };
 
 export const addEmployee = (employee) => {
   const employees = getList();
-  const newEmployee = { id: uuidv4(), ...employee };
-  employees.push(newEmployee);
-  localStorage["@employees"] = JSON.stringify(employees);
+  employees.push(employee);
+  localStorage.setItem('employees', JSON.stringify(employees));
 };
 
-export const editEmployee = (id, updatedEmployee) => {
-  let employees = getList();
-  employees = employees.map(employee =>
-    employee.id === id ? { ...employee, ...updatedEmployee } : employee
-  );
-  localStorage["@employees"] = JSON.stringify(employees);
+export const editEmployee = (id, updateEmployee) => {
+  const employees = getList();
+  const index = employees.findIndex(emp => emp.id === id);
+  if (index !== -1) {
+    employees[index] = { ...employees[index], ...updateEmployee };
+    localStorage.setItem('employees', JSON.stringify(employees));
+  }
 };
 
 export const deleteEmployee = (id) => {
-  let employees = getList();
-  employees = employees.filter(employee => employee.id !== id);
-  localStorage["@employees"] = JSON.stringify(employees);
+  const employees = getList();
+  const updatedEmployees = employees.filter(emp => emp.id !== id);
+  localStorage.setItem('employees', JSON.stringify(updatedEmployees));
 };

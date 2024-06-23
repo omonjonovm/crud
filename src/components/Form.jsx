@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useForm from '../hooks/useForm';
 import { useDispatch } from 'react-redux';
-import { getEmployeeById ,addEmployee, editEmployee } from '../service/localStorage';
+import { getEmployeeById } from '../service/localStorage';
+import { addEmployee, editEmployee } from '../toolkit/Slicer'; 
 
 const Form = () => {
   const navigate = useNavigate();
-  const [showAlert,setShowAlert] = useState(false)
+  const [showAlert, setShowAlert] = useState(false);
   const { id } = useParams();
   const dispatch = useDispatch();
   const { inputvalues, handleInputChange, resetForm, setForm } = useForm({
@@ -19,7 +20,9 @@ const Form = () => {
   useEffect(() => {
     if (id) {
       const employee = getEmployeeById(id);
-      setForm(employee);
+      if (employee) {
+        setForm(employee);
+      }
     }
   }, [id, setForm]);
 
